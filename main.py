@@ -27,11 +27,8 @@ FPS = 60
 grid_size = 10
 tile_buffer = 5
 
-class Grid:
-    def __init__(self):
-        pass
-
 # Grid Class
+class Grid:
     def __init__(self, grid_size, screen_size, tile_buffer):
         self.grid_size = grid_size
         self.tile_buffer = tile_buffer
@@ -61,13 +58,19 @@ class Grid:
                 tile.y_coordinate <= y <= tile.y_coordinate + self.tile_size):
                 return tile
         return None
-    
-    # funcs for:
-        # drawing tiles/grid
-        # managing tile statuses
-        # updating tile statuses
-        # being able to manage how tiles interact with eachother
 
+    def reset_hover_tiles(self):
+        """Resets all tiles that are currently 'mouse_hover' back to 'empty'."""
+        for tile in self.tiles:
+            if tile.status == "mouse_hover":
+                tile.update_status("empty")
+
+    def update_hover(self, x, y):
+        """Updates the tile under the mouse cursor if it is empty."""
+        self.reset_hover_tiles()
+        hover_tile = self.find_tile(x, y)
+        if hover_tile and hover_tile.status == "empty":
+            hover_tile.update_status("mouse_hover")
 
 # Tile Class
 class Tile:
@@ -103,6 +106,9 @@ def main():
                 if clicked_tile:
                     clicked_tile.update_status(current_player)
                     current_player = "player2" if current_player == "player1" else "player1"
+
+        # Update mouse_hover status tiles
+        grid.update_hover(mouse_x, mouse_y)
 
         # Rendering
         display.fill(BLACK)
