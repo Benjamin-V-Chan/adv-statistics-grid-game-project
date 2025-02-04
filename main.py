@@ -58,6 +58,13 @@ class Grid:
                 tile.y_coordinate <= y <= tile.y_coordinate + self.tile_size):
                 return tile
         return None
+    
+    def update_player(self, x, y, current_player):
+        clicked_tile = self.find_tile(x, y)
+        opposite_player = "player2" if current_player == "player1" else "player1"
+        if clicked_tile and (clicked_tile.status == "mouse_hover" or clicked_tile.status == "empty"):
+            clicked_tile.update_status(current_player)
+            current_player = opposite_player
 
     def reset_hover_tiles(self):
         """Resets all tiles that are currently 'mouse_hover' back to 'empty'."""
@@ -96,17 +103,15 @@ def main():
 
     while running:
         mouse_x, mouse_y = pygame.mouse.get_pos()
+        # TODO find the active tile here instead of having to call grid methods and re-identify active tile
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                clicked_tile = grid.find_tile(mouse_x, mouse_y)
-                if clicked_tile:
-                    clicked_tile.update_status(current_player)
-                    current_player = "player2" if current_player == "player1" else "player1"
-
+                grid.update_player(mouse_x, mouse_y, current_player)
+                
         # Update mouse_hover status tiles
         grid.update_hover(mouse_x, mouse_y)
 
