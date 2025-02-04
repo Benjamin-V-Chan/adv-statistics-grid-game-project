@@ -59,11 +59,11 @@ class Grid:
                 return tile
         return None
     
-    def update_player(self, x, y, current_player):
-        clicked_tile = self.find_tile(x, y)
+    def update_player(self, active_tile, current_player):
+        """Updates the active_tile status with current_player, if it is not already claimed by a player"""
         opposite_player = "player2" if current_player == "player1" else "player1"
-        if clicked_tile and (clicked_tile.status == "mouse_hover" or clicked_tile.status == "empty"):
-            clicked_tile.update_status(current_player)
+        if active_tile and (active_tile.status == "mouse_hover" or active_tile.status == "empty"):
+            active_tile.update_status(current_player)
             current_player = opposite_player
 
     def reset_hover_tiles(self):
@@ -72,12 +72,11 @@ class Grid:
             if tile.status == "mouse_hover":
                 tile.update_status("empty")
 
-    def update_hover(self, x, y):
-        """Updates the tile under the mouse cursor if it is empty."""
-        self.reset_hover_tiles()
-        hover_tile = self.find_tile(x, y)
-        if hover_tile and hover_tile.status == "empty":
-            hover_tile.update_status("mouse_hover")
+    def update_hover(self, active_tile):
+        """Updates the active_tile status to mouse_hover, if it is empty."""
+        self.reset_hover_tiles()        
+        if active_tile and active_tile.status == "empty":
+            active_tile.update_status("mouse_hover")
 
 # Tile Class
 class Tile:
@@ -103,17 +102,17 @@ def main():
 
     while running:
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        # TODO find the active tile here instead of having to call grid methods and re-identify active tile
+        active_tile = grid.find_tile(mouse_x, mouse_y)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                grid.update_player(mouse_x, mouse_y, current_player)
-                
+                grid.update_player(active_tile, current_player)
+
         # Update mouse_hover status tiles
-        grid.update_hover(mouse_x, mouse_y)
+        grid.update_hover(active_tile)
 
         # Rendering
         display.fill(BLACK)
