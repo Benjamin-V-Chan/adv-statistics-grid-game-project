@@ -34,20 +34,24 @@ class Grid:
         pass
 
 # Grid Class
-    # handles all tiles
-    # will have attributes for:
-        # storing each tile in a list
-        # grid size/dimensions
-        # tile sizes
-            # create a func for calcualating a single tile's size
-            # func would input screen size (for changing total length amounts)
-            # func would use grid constant attributes for grid size, tile buffer, and num tiles
-            # func should look smth like this:
-                # tile buffer total = tiles count * tile_buffer + tile_buffer (since 0_index still has single buffer)
-                # tiles total = total scren size - tile buffer total (remaining space that tiles should take up)
-                # return tiles total / tiles count
-        # tile amount
-        # tile buffer (empty space between tiles)
+    def __init__(self, grid_size, screen_size, tile_buffer):
+        self.grid_size = grid_size
+        self.tile_buffer = tile_buffer
+        
+        self.tile_size = self.calculate_tile_size(screen_size)
+
+        tiles = []
+        for x in range(grid_size):
+            for y in range(grid_size):
+                tiles.append(Tile(x, y, self.tile_size, tile_buffer, "empty"))
+        self.tiles = tiles
+
+    def calculate_tile_size(self, total_length):
+        """Calculates the size of each tile based on screen size and buffer."""
+        tile_buffer_total = self.tile_buffer * self.grid_size + self.tile_buffer
+        tiles_total = total_length - tile_buffer_total
+        return tiles_total / self.grid_size
+
     # funcs for:
         # drawing tiles/grid
         # managing tile statuses
@@ -55,7 +59,7 @@ class Grid:
         # being able to manage how tiles interact with eachother
 
 
-
+# Tile Class
 class Tile:
     def __init__(self, x_index, y_index, tile_size, tile_buffer, status):
         self.x_index = x_index
