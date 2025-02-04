@@ -60,11 +60,10 @@ class Grid:
         return None
     
     def update_player(self, active_tile, current_player):
-        """Updates the active_tile status with current_player, if it is not already claimed by a player"""
-        opposite_player = "player2" if current_player == "player1" else "player1"
+        """Updates the active_tile status with current_player, if it is not already claimed by a player."""
         if active_tile and (active_tile.status == "mouse_hover" or active_tile.status == "empty"):
             active_tile.update_status(current_player)
-            current_player = opposite_player
+            return "player2" if current_player == "player1" else "player1"
 
     def reset_hover_tiles(self):
         """Resets all tiles that are currently 'mouse_hover' back to 'empty'."""
@@ -109,7 +108,7 @@ def main():
                 running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                grid.update_player(active_tile, current_player)
+                current_player = grid.update_player(active_tile, current_player)
 
         # Update mouse_hover status tiles
         grid.update_hover(active_tile)
