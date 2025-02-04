@@ -88,7 +88,7 @@ class Tile:
 # Main Loop
 def main():
     grid = Grid(grid_size, screen_size, tile_buffer)
-
+    current_player = "player1"
     running = True
 
     while running:
@@ -97,6 +97,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                clicked_tile = grid.find_tile(mouse_x, mouse_y)
+                if clicked_tile:
+                    clicked_tile.update_status(current_player)
+                    current_player = "player2" if current_player == "player1" else "player1"
 
         # Rendering
         display.fill(BLACK)
