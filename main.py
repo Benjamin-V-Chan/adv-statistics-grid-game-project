@@ -57,19 +57,19 @@ class Grid:
 
 
 class Tile:
-    def __init__(self):
-        pass
+    def __init__(self, x_index, y_index, tile_size, tile_buffer, status):
+        self.x_index = x_index
+        self.y_index = y_index
+        self.status = status
+        self.tile_size = tile_size
 
-# Tile Class
-    # attributes:
-        # x_index (constant)
-        # y_index (constant)
-        # status
-        # tile_size (constant)
-        # x_coord (calculated based off x_index and grid dimensions/configurations)
-        # y_coord (calculated based off y_index and grid dimensions/configurations)
-        # color
-    # should have method for easy status + color updates (since they update together)
+        self.x_coordinate = (x_index * tile_size) + ((x_index + 1) * tile_buffer)
+        self.y_coordinate = (y_index * tile_size) + ((y_index + 1) * tile_buffer)
+        self.color = TILE_STATUS_COLORS[status]
+
+    def update_status(self, new_status):
+        self.status = new_status
+        self.color = TILE_STATUS_COLORS[new_status]
 
 # Main Loop
 def main():
