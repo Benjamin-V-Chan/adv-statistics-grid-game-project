@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # Pygame Setup
 pygame.init()
@@ -24,8 +25,25 @@ TILE_STATUS_COLORS = {
 FPS = 60
 
 # Default Game Settings
-grid_size = 10
-tile_buffer = 5
+GRID_SIZE = 10
+TILE_BUFFER = 5
+DICE_SIDES = 6
+
+# Player Class
+class Player:
+    def __init__(self, player, turns, color):
+        self.current_player = player
+        self.current_turns = turns
+        self.color = color
+
+    def roll_dice(self):
+        self.current_turns = random.randint(1, DICE_SIDES)
+
+    def flip_coin(self):
+        if random.randint(1, 2) == 1:
+            self.current_turns *= 2
+    
+
 
 # Grid Class
 class Grid:
@@ -64,6 +82,7 @@ class Grid:
         if active_tile and (active_tile.status == "mouse_hover" or active_tile.status == "empty"):
             active_tile.update_status(current_player)
             return "player2" if current_player == "player1" else "player1"
+        return current_player
 
     def reset_hover_tiles(self):
         """Resets all tiles that are currently 'mouse_hover' back to 'empty'."""
@@ -95,7 +114,7 @@ class Tile:
 
 # Main Loop
 def main():
-    grid = Grid(grid_size, screen_size, tile_buffer)
+    grid = Grid(GRID_SIZE, screen_size, TILE_BUFFER)
     current_player = "player1"
     running = True
 
@@ -112,6 +131,8 @@ def main():
 
         # Update mouse_hover status tiles
         grid.update_hover(active_tile)
+
+
 
         # Rendering
         display.fill(BLACK)
