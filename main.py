@@ -52,6 +52,18 @@ class Grid:
         tiles_total = total_length - tile_buffer_total
         return tiles_total / self.grid_size
 
+    def draw(self):
+        for tile in self.tiles:
+            pygame.draw.rect(display, tile.color, (tile.x_coordinate, tile.y_coordinate, self.tile_size, self.tile_size))
+
+    def find_tile(self, x, y):
+        """Finds the tile at a given (x, y) coordinate."""
+        for tile in self.tiles:
+            if (tile.x_coordinate <= x <= tile.x_coordinate + self.tile_size and
+                tile.y_coordinate <= y <= tile.y_coordinate + self.tile_size):
+                return tile
+        return None
+    
     # funcs for:
         # drawing tiles/grid
         # managing tile statuses
