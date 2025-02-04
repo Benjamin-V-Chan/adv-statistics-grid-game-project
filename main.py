@@ -23,11 +23,9 @@ TILE_STATUS_COLORS = {
 
 FPS = 60
 
-
 # Default Game Settings
 grid_size = 10
 tile_buffer = 5
-
 
 class Grid:
     def __init__(self):
@@ -89,6 +87,8 @@ class Tile:
 
 # Main Loop
 def main():
+    grid = Grid(grid_size, screen_size, tile_buffer)
+
     running = True
 
     while running:
@@ -100,6 +100,7 @@ def main():
 
         # Rendering
         display.fill(BLACK)
+        grid.draw()
 
         # Pygame updates
         pygame.display.flip()
