@@ -46,13 +46,14 @@ def mouse_collision(mouse_coordinates: list, object_dimensions: list):
 
 # Buttons Class
 class Buttons:
-    def __init__(self):
-        pass
-    # can use to help manage different buttons based off screens?
-        # would make more efficient checking
-    # could potentially use dict or list as well
-    # would need extra functionality to justify need for class
-        # ie; button interaction with eachother based off other button statuses
+    def __init__(self, buttons):
+        self.buttons = buttons
+
+    def find_button(self, x, y):
+        for button in self.buttons:
+            if mouse_collision([x, y], [button.x, button.y, button.width, button.height]):
+                return button
+        return None
 
 # Button Class
 class Button:
