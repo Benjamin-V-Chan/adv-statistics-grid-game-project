@@ -44,6 +44,16 @@ def mouse_collision(mouse_coordinates: list, object_dimensions: list):
         return True
     return False
 
+# Buttons Class
+class Buttons:
+    def __init__(self):
+        pass
+    # can use to help manage different buttons based off screens?
+        # would make more efficient checking
+    # could potentially use dict or list as well
+    # would need extra functionality to justify need for class
+        # ie; button interaction with eachother based off other button statuses
+
 # Button Class
 class Button:
     def __init__(self, x, y, width, height, text, main_color, border_color, border_thickness, highlight_color, pressed_action):
@@ -153,11 +163,16 @@ def main():
 
     current_player = Player("player1", 4)
 
+    buttons = []
+    buttons = Buttons(buttons)
+
     running = True
 
     while running:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         active_tile = grid.find_tile(mouse_x, mouse_y)
+        if not active_tile:
+            active_button = buttons.find_button(mouse_x, mouse_y)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -166,6 +181,8 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if active_tile:
                     current_player = grid.update_player(active_tile, current_player)
+                elif active_button:
+                    active_button.pressed_action()
 
         # Update mouse_hover status tiles
         grid.update_hover(active_tile)
