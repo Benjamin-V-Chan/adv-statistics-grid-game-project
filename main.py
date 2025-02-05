@@ -22,6 +22,11 @@ TILE_STATUS_COLORS = {
     "player2": BLUE
 }
 
+PLAYER_COLORS = {
+    "player1": RED,
+    "player2": BLUE
+}
+
 FPS = 60
 
 # Default Game Settings
@@ -29,12 +34,28 @@ GRID_SIZE = 10
 TILE_BUFFER = 5
 DICE_SIDES = 6
 
+# Helper Functions
+def mouse_collision(mouse_coordinates: list, object_dimensions: list):
+    """returns True if mouse_coordinates are within the object_dimensions"""
+    object_dimensions_x = object_dimensions[0]
+    object_dimensions_y = object_dimensions[1]
+    if (object_dimensions_x <= mouse_coordinates[0] <= object_dimensions_x + object_dimensions[2] and
+        object_dimensions_y <= mouse_coordinates[1] <= object_dimensions_y + object_dimensions[3]):
+        return True
+    return False
+
 # Player Class
 class Player:
-    def __init__(self, player, turns, color):
+    def __init__(self, player, turns):
         self.current_player = player
         self.current_turns = turns
-        self.color = color
+
+        self.color = PLAYER_COLORS[player]
+
+    def new_turn(self):
+        """Changes player's player and color attribute to reflect a COMPLETE new turn"""
+        self.current_player = "player2" if self.current_player == "player1" else "player1"
+        self.color = PLAYER_COLORS[self.current_player]
 
     def roll_dice(self):
         self.current_turns = random.randint(1, DICE_SIDES)
@@ -42,8 +63,6 @@ class Player:
     def flip_coin(self):
         if random.randint(1, 2) == 1:
             self.current_turns *= 2
-    
-
 
 # Grid Class
 class Grid:
@@ -72,17 +91,14 @@ class Grid:
     def find_tile(self, x, y):
         """Finds the tile at a given (x, y) coordinate."""
         for tile in self.tiles:
-            if (tile.x_coordinate <= x <= tile.x_coordinate + self.tile_size and
-                tile.y_coordinate <= y <= tile.y_coordinate + self.tile_size):
+            if mouse_collision([x, y], [tile.x_coordinate, tile.y_coordinate, self.tile_size, self.tile_size]):
                 return tile
         return None
     
-    def update_player(self, active_tile, current_player):
+    def update_player(self, active_tile, player):
         """Updates the active_tile status with current_player, if it is not already claimed by a player."""
         if active_tile and (active_tile.status == "mouse_hover" or active_tile.status == "empty"):
-            active_tile.update_status(current_player)
-            return "player2" if current_player == "player1" else "player1"
-        return current_player
+            active_tile.update_status(player)
 
     def reset_hover_tiles(self):
         """Resets all tiles that are currently 'mouse_hover' back to 'empty'."""
@@ -115,7 +131,9 @@ class Tile:
 # Main Loop
 def main():
     grid = Grid(GRID_SIZE, screen_size, TILE_BUFFER)
-    current_player = "player1"
+
+    current_player = Player("player1", 4)
+
     running = True
 
     while running:
@@ -127,11 +145,16 @@ def main():
                 running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                current_player = grid.update_player(active_tile, current_player)
+                if active_tile:
+                    current_player = grid.update_player(active_tile, current_player)
 
         # Update mouse_hover status tiles
         grid.update_hover(active_tile)
 
+        # Player Turn
+        if current_player.turn == 0:
+            current_player.switch_turn()
+            current_player.roll_dice()
 
 
         # Rendering
