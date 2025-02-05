@@ -46,23 +46,22 @@ def mouse_collision(mouse_coordinates: list, object_dimensions: list):
 
 # Button Class
 class Button:
-    def __init__(self):
-        pass
-        # Attributes for following:
-        # x
-        # y
-        # width
-        # height
-        # text
-        # main_color
-        # border_color
-        # border_thickness
-        # highlight_color
-        # pressed_action
-    # ability to cause a specific event, func, or status update based off button pressed?
-        # need way to recycle this class for different buttons
-        # AND
-        # for different actions/menus (especially nesting menus)
+    def __init__(self, x, y, width, height, text, main_color, border_color, border_thickness, highlight_color, pressed_action):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+        self.main_color = main_color
+        self.border_color = border_color
+        self.border_thickness = border_thickness
+        self.highlight_color = highlight_color
+
+        self.pressed_action = pressed_action
+    
+    def pressed_action(self):
+        self.pressed_action
+
 
 # Player Class
 class Player:
@@ -159,7 +158,7 @@ def main():
     while running:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         active_tile = grid.find_tile(mouse_x, mouse_y)
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
