@@ -93,6 +93,22 @@ class Player:
         if random.randint(1, 2) == 1:
             self.current_turns *= 2
 
+# Tile Class
+class Tile:
+    def __init__(self, x_index, y_index, tile_size, tile_buffer, status="empty"):
+        self.x_index = x_index
+        self.y_index = y_index
+        self.status = status
+        self.tile_size = tile_size
+        self.x_coordinate = (x_index * tile_size) + ((x_index + 1) * tile_buffer)
+        self.y_coordinate = (y_index * tile_size) + ((y_index + 1) * tile_buffer)
+        self.color = TILE_STATUS_COLORS[status]
+
+    def update_status(self, new_status):
+        """Update the tile's status and color."""
+        self.status = new_status
+        self.color = TILE_STATUS_COLORS[new_status]
+
 # Grid Class
 class Grid:
     def __init__(self, grid_size, board_size, tile_buffer):
@@ -140,22 +156,6 @@ class Grid:
         self.reset_hover_tiles()        
         if active_tile and active_tile.status == "empty":
             active_tile.update_status("mouse_hover")
-
-# Tile Class
-class Tile:
-    def __init__(self, x_index, y_index, tile_size, tile_buffer, status):
-        self.x_index = x_index
-        self.y_index = y_index
-        self.status = status
-        self.tile_size = tile_size
-
-        self.x_coordinate = (x_index * tile_size) + ((x_index + 1) * tile_buffer)
-        self.y_coordinate = (y_index * tile_size) + ((y_index + 1) * tile_buffer)
-        self.color = TILE_STATUS_COLORS[status]
-
-    def update_status(self, new_status):
-        self.status = new_status
-        self.color = TILE_STATUS_COLORS[new_status]
 
 # Main Loop
 def main():
