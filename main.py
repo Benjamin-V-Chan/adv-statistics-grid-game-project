@@ -154,46 +154,49 @@ def flip_coin_action():
 
 
 
-# Main Loop
+# Main Game Loop
 def main():
+    global current_player
+
     grid = Grid(GRID_SIZE, BOARD_SIZE, TILE_BUFFER)
+    current_player = Player("player1")
+    font = pygame.font.Font(None, 36)
 
-    current_player = Player("player1", 4)
-
-    buttons = []
+    # List of buttons
+    buttons = [
+        Button(600, 120, 150, 50, "Flip Coin", BLUE, BLACK, LIGHT_GREY, flip_coin_action)
+    ]
 
     running = True
-
     while running:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        active_tile = grid.find_tile(mouse_x, mouse_y)
-        if not active_tile:
-            active_button = buttons.find_button(mouse_x, mouse_y)
+        mouse_pos = pygame.mouse.get_pos()
+        active_tile = grid.find_tile(mouse_pos[0], mouse_pos[1])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if active_tile:
-                    current_player = grid.update_player(active_tile, current_player)
-                elif active_button:
-                    active_button.pressed_action()
+                for button in buttons:
+                    button.check_click(mouse_pos)  # Handle button clicks
 
-        # Update mouse_hover status tiles
+                if active_tile and (active_tile.status == "empty" or active_tile.status == "mouse_hover"):
+                    active_tile.update_status(current_player.current_player)
+                    current_player.current_turns -= 1  # Reduce turns
+
+        # Update hover state
         grid.update_hover(active_tile)
 
-        # Player Turn
-        if current_player.turn == 0:
+        # Handle turn switching
+        if current_player.current_turns == 0:
             current_player.switch_turn()
-            current_player.roll_dice()
 
-
-        # Rendering
+        # Drawing
         display.fill(BLACK)
         grid.draw()
+        for button in buttons:
+            button.is_hovering = button.is_hovered(mouse_pos)
+            button.draw(display, font)
 
-        # Pygame updates
         pygame.display.flip()
         clock.tick(FPS)
 
