@@ -73,21 +73,23 @@ class Button:
 
 # Player Class
 class Player:
-    def __init__(self, player, turns):
+    def __init__(self, player):
         self.current_player = player
-        self.current_turns = turns
-
+        self.current_turns = 0
         self.color = PLAYER_COLORS[player]
 
-    def new_turn(self):
-        """Changes player's player and color attribute to reflect a COMPLETE new turn"""
+    def switch_turn(self):
+        """Switch player and reset turns."""
         self.current_player = "player2" if self.current_player == "player1" else "player1"
         self.color = PLAYER_COLORS[self.current_player]
+        self.roll_dice()
 
     def roll_dice(self):
+        """Rolls a dice to determine the number of turns."""
         self.current_turns = random.randint(1, DICE_SIDES)
 
     def flip_coin(self):
+        """Doubles turns on heads."""
         if random.randint(1, 2) == 1:
             self.current_turns *= 2
 
