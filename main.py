@@ -111,49 +111,37 @@ class Tile:
 
 # Grid Class
 class Grid:
-    def __init__(self, grid_size, board_size, tile_buffer):
+    def __init__(self, grid_size, screen_size, tile_buffer):
         self.grid_size = grid_size
         self.tile_buffer = tile_buffer
-        
-        self.tile_size = self.calculate_tile_size(board_size)
-
-        tiles = []
-        for x in range(grid_size):
-            for y in range(grid_size):
-                tiles.append(Tile(x, y, self.tile_size, tile_buffer, "empty"))
-        self.tiles = tiles
+        self.tile_size = self.calculate_tile_size(screen_size)
+        self.tiles = [Tile(x, y, self.tile_size, tile_buffer) for x in range(grid_size) for y in range(grid_size)]
 
     def calculate_tile_size(self, total_length):
-        """Calculates the size of each tile based on screen size and buffer."""
-        tile_buffer_total = self.tile_buffer * self.grid_size + self.tile_buffer
-        tiles_total = total_length - tile_buffer_total
-        return tiles_total / self.grid_size
+        """Calculate tile size dynamically."""
+        return (total_length - ((self.grid_size + 1) * self.tile_buffer)) / self.grid_size
 
     def draw(self):
+        """Draw the grid."""
         for tile in self.tiles:
             pygame.draw.rect(display, tile.color, (tile.x_coordinate, tile.y_coordinate, self.tile_size, self.tile_size))
 
     def find_tile(self, x, y):
-        """Finds the tile at a given (x, y) coordinate."""
+        """Find the tile at a given (x, y) coordinate."""
         for tile in self.tiles:
             if mouse_collision([x, y], [tile.x_coordinate, tile.y_coordinate, self.tile_size, self.tile_size]):
                 return tile
         return None
-    
-    def update_player(self, active_tile, player):
-        """Updates the active_tile status with current_player, if it is not already claimed by a player."""
-        if active_tile and (active_tile.status == "mouse_hover" or active_tile.status == "empty"):
-            active_tile.update_status(player)
 
     def reset_hover_tiles(self):
-        """Resets all tiles that are currently 'mouse_hover' back to 'empty'."""
+        """Reset all 'mouse_hover' tiles to 'empty'."""
         for tile in self.tiles:
             if tile.status == "mouse_hover":
                 tile.update_status("empty")
 
     def update_hover(self, active_tile):
-        """Updates the active_tile status to mouse_hover, if it is empty."""
-        self.reset_hover_tiles()        
+        """Set active tile to 'mouse_hover' if empty."""
+        self.reset_hover_tiles()
         if active_tile and active_tile.status == "empty":
             active_tile.update_status("mouse_hover")
 
