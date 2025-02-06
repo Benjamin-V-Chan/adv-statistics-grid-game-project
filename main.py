@@ -35,25 +35,10 @@ TILE_BUFFER = 5
 DICE_SIDES = 6
 
 # Helper Functions
-def mouse_collision(mouse_coordinates: list, object_dimensions: list):
-    """returns True if mouse_coordinates are within the object_dimensions"""
-    object_dimensions_x = object_dimensions[0]
-    object_dimensions_y = object_dimensions[1]
-    if (object_dimensions_x <= mouse_coordinates[0] <= object_dimensions_x + object_dimensions[2] and
-        object_dimensions_y <= mouse_coordinates[1] <= object_dimensions_y + object_dimensions[3]):
-        return True
-    return False
-
-# Buttons Class
-class Buttons:
-    def __init__(self, buttons):
-        self.buttons = buttons
-
-    def find_button(self, x, y):
-        for button in self.buttons:
-            if mouse_collision([x, y], [button.x, button.y, button.width, button.height]):
-                return button
-        return None
+def mouse_collision(mouse_pos, obj_rect):
+    """Check if mouse is within a rectangle."""
+    return (obj_rect[0] <= mouse_pos[0] <= obj_rect[0] + obj_rect[2] and 
+            obj_rect[1] <= mouse_pos[1] <= obj_rect[1] + obj_rect[3])
 
 # Button Class
 class Button:
@@ -165,7 +150,6 @@ def main():
     current_player = Player("player1", 4)
 
     buttons = []
-    buttons = Buttons(buttons)
 
     running = True
 
