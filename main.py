@@ -43,22 +43,33 @@ def mouse_collision(mouse_pos, obj_rect):
 
 # Button Class
 class Button:
-    def __init__(self, x, y, width, height, text, main_color, border_color, border_thickness, highlight_color, pressed_action):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+    def __init__(self, x, y, width, height, text, main_color, border_color, highlight_color, action):
+        self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.main_color = main_color
         self.border_color = border_color
-        self.border_thickness = border_thickness
         self.highlight_color = highlight_color
+        self.action = action
+        self.is_hovering = False
 
-        self.pressed_action = pressed_action
-    
-    def pressed_action(self):
-        self.pressed_action
+    def draw(self, screen, font):
+        """Draw the button and change color when hovered."""
+        color = self.highlight_color if self.is_hovering else self.main_color
+        pygame.draw.rect(screen, color, self.rect)
+        pygame.draw.rect(screen, self.border_color, self.rect, 2)
 
+        text_surface = font.render(self.text, True, BLACK)
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        screen.blit(text_surface, text_rect)
+
+    def is_hovered(self, mouse_pos):
+        """Check if the mouse is over the button."""
+        return self.rect.collidepoint(mouse_pos)
+
+    def check_click(self, mouse_pos):
+        """Call action if clicked."""
+        if self.is_hovered(mouse_pos) and self.action:
+            self.action()
 
 # Player Class
 class Player:
