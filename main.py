@@ -145,6 +145,15 @@ class Grid:
         if active_tile and active_tile.status == "empty":
             active_tile.update_status("mouse_hover")
 
+# Game Actions
+
+def flip_coin_action():
+    """Flip a coin when the button is pressed."""
+    global current_player
+    current_player.flip_coin()
+
+
+
 # Main Loop
 def main():
     grid = Grid(GRID_SIZE, BOARD_SIZE, TILE_BUFFER)
