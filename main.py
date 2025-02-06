@@ -3,9 +3,8 @@ import random
 
 # Pygame Setup
 pygame.init()
-
-screen_size = 800
-display = pygame.display.set_mode((screen_size, screen_size))
+display_width, display_height = 600, 800
+display = pygame.display.set_mode((display_width, display_height))
 clock = pygame.time.Clock()
 
 # Constants
@@ -27,12 +26,14 @@ PLAYER_COLORS = {
     "player2": BLUE
 }
 
-FPS = 60
+BOARD_SIZE = display_width
+GAME_INFO_DISPLAY_DISTANCE = display_height - BOARD_SIZE
 
-# Default Game Settings
+FPS = 60
 GRID_SIZE = 10
 TILE_BUFFER = 5
 DICE_SIDES = 6
+
 
 # Helper Functions
 def mouse_collision(mouse_pos, obj_rect):
@@ -81,11 +82,11 @@ class Player:
 
 # Grid Class
 class Grid:
-    def __init__(self, grid_size, screen_size, tile_buffer):
+    def __init__(self, grid_size, board_size, tile_buffer):
         self.grid_size = grid_size
         self.tile_buffer = tile_buffer
         
-        self.tile_size = self.calculate_tile_size(screen_size)
+        self.tile_size = self.calculate_tile_size(board_size)
 
         tiles = []
         for x in range(grid_size):
@@ -145,7 +146,7 @@ class Tile:
 
 # Main Loop
 def main():
-    grid = Grid(GRID_SIZE, screen_size, TILE_BUFFER)
+    grid = Grid(GRID_SIZE, BOARD_SIZE, TILE_BUFFER)
 
     current_player = Player("player1", 4)
 
