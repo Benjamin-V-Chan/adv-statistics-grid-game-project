@@ -3,8 +3,8 @@ import random
 
 # Pygame Setup
 pygame.init()
-display_width, display_height = 600, 800
-display = pygame.display.set_mode((display_width, display_height))
+screen_width, screen_height = 600, 800
+display = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 
 # Constants
@@ -13,6 +13,7 @@ LIGHT_GREY = (200, 200, 200)
 BLACK = (0, 0, 0)
 RED = (255, 64, 64)
 BLUE = (64, 64, 255)
+HIGHLIGHT_YELLOW = (255, 255, 0)
 
 TILE_STATUS_COLORS = {
     "empty": WHITE,
@@ -26,13 +27,17 @@ PLAYER_COLORS = {
     "player2": BLUE
 }
 
-BOARD_SIZE = display_width
-GAME_INFO_DISPLAY_DISTANCE = display_height - BOARD_SIZE
+BOARD_SIZE = screen_width
+GAME_INFO_DISPLAY_HEIGHT = screen_height - BOARD_SIZE
+SPLIT_OFFSET = 50  # Adjustable offset for the diagonal split
 
 FPS = 60
 GRID_SIZE = 10
 TILE_BUFFER = 5
 DICE_SIDES = 6
+NUMBER_OF_DICE = 2
+ROLL_ANIMATION_FRAMES = 100  # Total frames to roll
+ROLL_CHANGES = 10  # Number of number changes in animation
 
 
 # Helper Functions
