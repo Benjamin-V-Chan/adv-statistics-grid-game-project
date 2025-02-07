@@ -86,19 +86,17 @@ class Player:
         self.color = PLAYER_COLORS[player]
 
     def switch_turn(self):
-        """Switch player and reset turns."""
+        """Switch player and prepare for new turn."""
         self.current_player = "player2" if self.current_player == "player1" else "player1"
         self.color = PLAYER_COLORS[self.current_player]
-        self.roll_dice()
-
-    def roll_dice(self):
-        """Rolls a dice to determine the number of turns."""
-        self.current_turns = random.randint(1, DICE_SIDES)
+        self.current_turns = 0
 
     def flip_coin(self):
-        """Doubles turns on heads."""
+        """Doubles turns on heads, but loses all turns if tails."""
         if random.randint(1, 2) == 1:
             self.current_turns *= 2
+        else:
+            self.current_turns = 0
 
 # Tile Class
 class Tile:
