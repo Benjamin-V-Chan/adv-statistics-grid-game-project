@@ -78,6 +78,27 @@ class Button:
             self.action()
             self.enabled = False
 
+# Dice Rolling System
+class DiceRoller:
+    def __init__(self):
+        self.rolling = False
+        self.roll_frames = 0
+        self.current_numbers = [random.randint(1, DICE_SIDES) for _ in range(NUMBER_OF_DICE)]
+        self.final_numbers = []
+        self.dice_size = 200
+        self.spacing = self.dice_size // 5
+        self.border_thickness = self.dice_size // 20
+        self.font = pygame.font.Font(None, self.dice_size // 2)
+        self.post_roll_frames = 0  # Delay frames after final roll before allowing actions
+
+    def start_roll(self):
+        """Starts the dice rolling animation."""
+        self.rolling = True
+        self.roll_frames = 0
+        self.final_numbers = []
+        self.post_roll_frames = 0
+        self.current_numbers = [random.randint(1, DICE_SIDES) for _ in range(NUMBER_OF_DICE)]
+
 # Player Class
 class Player:
     def __init__(self, player):
