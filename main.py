@@ -276,12 +276,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                for button in buttons:
-                    button.check_click(mouse_pos)  # Handle button clicks
-
-                if active_tile and (active_tile.status == "empty" or active_tile.status == "mouse_hover"):
-                    active_tile.update_status(current_player.current_player)
-                    current_player.current_turns -= 1  # Reduce turns
+                # Handle normal actions only after rolling
+                if not dice_roller.rolling and current_player.current_turns > 0:
+                    if active_tile and active_tile.status in ["empty", "mouse_hover"]:
+                        active_tile.update_status(current_player.current_player)
+                        current_player.current_turns -= 1
+                if flip_coin_button.enabled:
+                    flip_coin_button.check_click(mouse_pos)
 
         # Update hover state
         grid.update_hover(active_tile)
