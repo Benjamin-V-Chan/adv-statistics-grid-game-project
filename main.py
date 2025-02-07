@@ -116,10 +116,10 @@ class Tile:
 
 # Grid Class
 class Grid:
-    def __init__(self, grid_size, screen_size, tile_buffer):
+    def __init__(self, grid_size, board_size, tile_buffer):
         self.grid_size = grid_size
         self.tile_buffer = tile_buffer
-        self.tile_size = self.calculate_tile_size(screen_size)
+        self.tile_size = self.calculate_tile_size(board_size)
         self.tiles = [Tile(x, y, self.tile_size, tile_buffer) for x in range(grid_size) for y in range(grid_size)]
 
     def calculate_tile_size(self, total_length):
@@ -149,15 +149,6 @@ class Grid:
         self.reset_hover_tiles()
         if active_tile and active_tile.status == "empty":
             active_tile.update_status("mouse_hover")
-
-# Game Actions
-
-def flip_coin_action():
-    """Flip a coin when the button is pressed."""
-    global current_player
-    current_player.flip_coin()
-
-
 
 # Main Game Loop
 def main():
