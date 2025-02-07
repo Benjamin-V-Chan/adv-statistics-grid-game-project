@@ -99,6 +99,36 @@ class DiceRoller:
         self.post_roll_frames = 0
         self.current_numbers = [random.randint(1, DICE_SIDES) for _ in range(NUMBER_OF_DICE)]
 
+    def update(self):
+        """Updates the rolling animation."""
+        if self.rolling:
+            if self.roll_frames % (ROLL_ANIMATION_FRAMES // ROLL_CHANGES) == 0:
+                self.current_numbers = [random.randint(1, DICE_SIDES) for _ in range(NUMBER_OF_DICE)]
+            self.roll_frames += 1
+
+            if self.roll_frames >= ROLL_ANIMATION_FRAMES:
+                self.rolling = False
+                self.final_numbers = self.current_numbers[:]
+        elif self.final_numbers:
+            self.post_roll_frames += 1
+            if self.post_roll_frames >= 30:  # Delay before enabling actions
+                self.final_numbers = []
+
+    def draw(self):
+        """Draws the dice in the middle of the screen with dynamic borders and spacing."""
+        if self.rolling or self.final_numbers:
+            total_width = (NUMBER_OF_DICE * self.dice_size) + ((NUMBER_OF_DICE - 1) * self.spacing)
+            start_x = (screen_width - total_width) // 2
+            y_position = screen_height // 2 - self.dice_size // 2
+
+            for i, number in enumerate(self.current_numbers):
+                x = start_x + i * (self.dice_size + self.spacing)
+                pygame.draw.rect(display, WHITE, (x, y_position, self.dice_size, self.dice_size), border_radius=10)
+                pygame.draw.rect(display, BLACK, (x, y_position, self.dice_size, self.dice_size), self.border_thickness, border_radius=10)
+                text = self.font.render(str(number), True, BLACK)
+                text_rect = text.get_rect(center=(x + self.dice_size // 2, y_position + self.dice_size // 2))
+                display.blit(text, text_rect)
+
 # Player Class
 class Player:
     def __init__(self, player):
