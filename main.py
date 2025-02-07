@@ -266,7 +266,7 @@ def main():
 
     # Start first dice roll
     dice_roller.start_roll()
-    
+
     running = True
     while running:
         mouse_pos = pygame.mouse.get_pos()
@@ -319,3 +319,9 @@ def main():
 
 
 main()
+
+#TODO 
+    # Floodfill recursive func for "flood" behavior of tiles
+    # Match reset
+    # Animations/direct visual feedback for coin flips
+    # Animated tile fill
