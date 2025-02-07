@@ -248,14 +248,24 @@ class Grid:
 def main():
     global current_player
 
-    grid = Grid(GRID_SIZE, BOARD_SIZE, TILE_BUFFER)
     current_player = Player("player1")
+
+    grid = Grid(GRID_SIZE, BOARD_SIZE, TILE_BUFFER)
+    game_info = GameInfoDisplay(screen_width, GAME_INFO_DISPLAY_HEIGHT, SPLIT_OFFSET)
+
     font = pygame.font.Font(None, 36)
 
-    # List of buttons
-    buttons = [
-        Button(600, 120, 150, 50, "Flip Coin", BLUE, BLACK, LIGHT_GREY, flip_coin_action)
-    ]
+    # Flip Coin Button (Centered)
+    button_width, button_height = 150, 50
+    button_x = (screen_width // 2) - (button_width // 2)
+    button_y = BOARD_SIZE + (GAME_INFO_DISPLAY_HEIGHT // 2) - (button_height // 2)
+    flip_coin_button = Button(button_x, button_y, button_width, button_height,
+                              "Flip Coin", LIGHT_GREY, BLACK, WHITE, current_player.flip_coin)
+
+    dice_roller = DiceRoller()
+
+    # Start first dice roll
+    dice_roller.start_roll()
 
     running = True
     while running:
