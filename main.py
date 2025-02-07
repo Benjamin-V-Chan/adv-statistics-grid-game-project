@@ -56,10 +56,11 @@ class Button:
         self.highlight_color = highlight_color
         self.action = action
         self.is_hovering = False
+        self.enabled = True  # Prevent clicking multiple times per turn
 
     def draw(self, screen, font):
         """Draw the button and change color when hovered."""
-        color = self.highlight_color if self.is_hovering else self.main_color
+        color = self.highlight_color if self.is_hovering and self.enabled else self.main_color
         pygame.draw.rect(screen, color, self.rect)
         pygame.draw.rect(screen, self.border_color, self.rect, 2)
 
@@ -72,9 +73,10 @@ class Button:
         return self.rect.collidepoint(mouse_pos)
 
     def check_click(self, mouse_pos):
-        """Call action if clicked."""
+        """Call action if clicked and not enabled."""
         if self.is_hovered(mouse_pos) and self.action:
             self.action()
+            self.enabled = False
 
 # Player Class
 class Player:
