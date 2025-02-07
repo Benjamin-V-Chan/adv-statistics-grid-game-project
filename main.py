@@ -46,6 +46,15 @@ def mouse_collision(mouse_pos, obj_rect):
     return (obj_rect[0] <= mouse_pos[0] <= obj_rect[0] + obj_rect[2] and 
             obj_rect[1] <= mouse_pos[1] <= obj_rect[1] + obj_rect[3])
 
+
+# Game Info Display Class
+class GameInfoDisplay:
+    def __init__(self, width, height, split_offset):
+        self.width = width
+        self.height = height
+        self.split_offset = split_offset
+        self.font = pygame.font.Font(None, 36)
+
 # Button Class
 class Button:
     def __init__(self, x, y, width, height, text, main_color, border_color, highlight_color, action):
