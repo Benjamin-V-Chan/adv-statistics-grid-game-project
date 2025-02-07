@@ -55,6 +55,40 @@ class GameInfoDisplay:
         self.split_offset = split_offset
         self.font = pygame.font.Font(None, 36)
 
+    def draw(self, player1_tiles, player2_tiles, current_player, turns_left):
+        """Draw the game information display with a diagonal split and border highlight."""
+        # Split diagonal points
+        left_split = screen_width // 2 - self.split_offset
+        right_split = screen_width // 2 + self.split_offset
+
+        pygame.draw.polygon(display, RED, [(0, BOARD_SIZE), (0, screen_height), (left_split, screen_height)])
+        pygame.draw.polygon(display, BLUE, [(screen_width, BOARD_SIZE), (screen_width, screen_height),
+                                            (right_split, screen_height)])
+
+        # Highlight the current player's side with a border
+        border_width = 5
+        if current_player == "player1":
+            pygame.draw.polygon(display, HIGHLIGHT_YELLOW, [(0, BOARD_SIZE), (0, screen_height), 
+                                                             (left_split, screen_height)], border_width)
+        else:
+            pygame.draw.polygon(display, HIGHLIGHT_YELLOW, [(screen_width, BOARD_SIZE), (screen_width, screen_height), 
+                                                             (right_split, screen_height)], border_width)
+
+        # Display player tile counts
+        p1_text = self.font.render(f"P1 Tiles: {player1_tiles}", True, WHITE)
+        display.blit(p1_text, (40, BOARD_SIZE + 50))
+
+        p2_text = self.font.render(f"P2 Tiles: {player2_tiles}", True, WHITE)
+        display.blit(p2_text, (screen_width - 170, BOARD_SIZE + 50))
+
+        # Display current player's turn & turns left
+        if current_player == "player1":
+            turn_text = self.font.render(f"Turns Left: {turns_left}", True, WHITE)
+            display.blit(turn_text, (40, BOARD_SIZE + 90))
+        else:
+            turn_text = self.font.render(f"Turns Left: {turns_left}", True, WHITE)
+            display.blit(turn_text, (screen_width - 170, BOARD_SIZE + 90))
+
 # Button Class
 class Button:
     def __init__(self, x, y, width, height, text, main_color, border_color, highlight_color, action):
