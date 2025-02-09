@@ -199,13 +199,14 @@ class Player:
             self.current_turns = 0
 # Tile Class
 class Tile:
-    def __init__(self, x_index, y_index, tile_size, tile_buffer, status="empty"):
-        self.x_index = x_index
-        self.y_index = y_index
+    def __init__(self, x, y, tile_size, tile_buffer, status="empty"):
+        self.x = x
+        self.y = y
         self.status = status
         self.tile_size = tile_size
-        self.x_coordinate = (x_index * tile_size) + ((x_index + 1) * tile_buffer)
-        self.y_coordinate = (y_index * tile_size) + ((y_index + 1) * tile_buffer)
+        self.tile_buffer = tile_buffer
+        self.x_coordinate = (x * tile_size) + ((x + 1) * tile_buffer)
+        self.y_coordinate = (y * tile_size) + ((y + 1) * tile_buffer)
         self.color = TILE_STATUS_COLORS[status]
 
     def update_status(self, new_status):
