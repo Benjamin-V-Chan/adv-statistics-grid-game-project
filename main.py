@@ -305,10 +305,8 @@ def main():
     global current_player
 
     current_player = Player("player1")
-
     grid = Grid(GRID_SIZE, BOARD_SIZE, TILE_BUFFER)
     game_info = GameInfoDisplay(screen_width, GAME_INFO_DISPLAY_HEIGHT, SPLIT_OFFSET)
-
     font = pygame.font.Font(None, 36)
 
     # Flip Coin Button (Centered)
@@ -319,12 +317,11 @@ def main():
                               "Flip Coin", LIGHT_GREY, BLACK, WHITE, current_player.flip_coin)
 
     dice_roller = DiceRoller()
-
-    # Start first dice roll
-    dice_roller.start_roll()
+    dice_roller.start_roll()  # Start the first dice roll
 
     running = True
     while running:
+        flattened_list_tiles = flatten_list(grid.tiles, [])
         mouse_pos = pygame.mouse.get_pos()
         active_tile = grid.find_tile(mouse_pos[0], mouse_pos[1])
 
@@ -332,38 +329,35 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Handle normal actions only after rolling
                 if not dice_roller.rolling and current_player.current_turns > 0:
                     if active_tile and active_tile.status in ["empty", "mouse_hover"]:
                         active_tile.update_status(current_player.current_player)
+                        # Check the entire grid for any closed rectangles for the current player.
+                        grid.flood_fill_player(current_player.current_player)
                         current_player.current_turns -= 1
                 if flip_coin_button.enabled:
                     flip_coin_button.check_click(mouse_pos)
 
         dice_roller.update()
 
-        # If turns run out, switch player and roll dice again
         if not dice_roller.rolling and current_player.current_turns == 0 and not dice_roller.final_numbers:
             current_player.switch_turn()
             dice_roller.start_roll()
-            flip_coin_button.enabled = False  # Disable flip coin button until dice is rolled
+            flip_coin_button.enabled = False
 
         if not dice_roller.rolling:
             grid.update_hover(active_tile)
-
             if dice_roller.final_numbers:
-                # Outside of class updates once dice roll finished
                 current_player.current_turns = sum(dice_roller.final_numbers)
                 flip_coin_button.enabled = True
 
         flip_coin_button.is_hovering = flip_coin_button.is_hovered(mouse_pos)
 
-        # Rendering            
         display.fill(BLACK)
-        game_info.draw(sum(tile.status == "player1" for tile in grid.tiles),
-                    sum(tile.status == "player2" for tile in grid.tiles),
-                    current_player.current_player,
-                    current_player.current_turns)
+        game_info.draw(sum(tile.status == "player1" for tile in flattened_list_tiles),
+                       sum(tile.status == "player2" for tile in flattened_list_tiles),
+                       current_player.current_player,
+                       current_player.current_turns)
         flip_coin_button.draw(display, font)
         grid.draw()
         dice_roller.draw()
@@ -373,11 +367,4 @@ def main():
 
     pygame.quit()
 
-
 main()
-
-#TODO 
-    # Floodfill recursive func for "flood" behavior of tiles
-    # Match reset
-    # Animations/direct visual feedback for coin flips
-    # Animated tile fill
