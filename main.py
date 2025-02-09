@@ -39,13 +39,19 @@ NUMBER_OF_DICE = 2
 ROLL_ANIMATION_FRAMES = 100  # Total frames to roll
 ROLL_CHANGES = 10  # Number of number changes in animation
 
-
 # Helper Functions
 def mouse_collision(mouse_pos, obj_rect):
     """Check if mouse is within a rectangle."""
     return (obj_rect[0] <= mouse_pos[0] <= obj_rect[0] + obj_rect[2] and 
             obj_rect[1] <= mouse_pos[1] <= obj_rect[1] + obj_rect[3])
 
+def flatten_list(l, master_list):
+    for element in l:
+        if isinstance(element, list):
+            flatten_list(element, master_list)
+        else:
+            master_list.append(element)
+    return master_list
 
 # Game Info Display Class
 class GameInfoDisplay:
@@ -132,7 +138,7 @@ class DiceRoller:
         self.spacing = self.dice_size // 5
         self.border_thickness = self.dice_size // 20
         self.font = pygame.font.Font(None, self.dice_size // 2)
-        self.post_roll_frames = 0  # Delay frames after final roll before allowing actions
+        self.post_roll_frames = 0
 
     def start_roll(self):
         """Starts the dice rolling animation."""
@@ -154,7 +160,7 @@ class DiceRoller:
                 self.final_numbers = self.current_numbers[:]
         elif self.final_numbers:
             self.post_roll_frames += 1
-            if self.post_roll_frames >= 30:  # Delay before enabling actions
+            if self.post_roll_frames >= 30:
                 self.final_numbers = []
 
     def draw(self):
@@ -191,7 +197,6 @@ class Player:
             self.current_turns *= 2
         else:
             self.current_turns = 0
-
 # Tile Class
 class Tile:
     def __init__(self, x_index, y_index, tile_size, tile_buffer, status="empty"):
