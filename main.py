@@ -220,35 +220,85 @@ class Grid:
         self.grid_size = grid_size
         self.tile_buffer = tile_buffer
         self.tile_size = self.calculate_tile_size(board_size)
-        self.tiles = [Tile(x, y, self.tile_size, tile_buffer) for x in range(grid_size) for y in range(grid_size)]
+        self.tiles = [[Tile(x, y, self.tile_size, tile_buffer)
+                       for y in range(grid_size)]
+                      for x in range(grid_size)]
 
     def calculate_tile_size(self, total_length):
-        """Calculate tile size dynamically."""
         return (total_length - ((self.grid_size + 1) * self.tile_buffer)) / self.grid_size
 
     def draw(self):
-        """Draw the grid."""
-        for tile in self.tiles:
-            pygame.draw.rect(display, tile.color, (tile.x_coordinate, tile.y_coordinate, self.tile_size, self.tile_size))
-
-    def find_tile(self, x, y):
-        """Find the tile at a given (x, y) coordinate."""
-        for tile in self.tiles:
-            if mouse_collision([x, y], [tile.x_coordinate, tile.y_coordinate, self.tile_size, self.tile_size]):
-                return tile
-        return None
+        for row in self.tiles:
+            for tile in row:
+                pygame.draw.rect(display, tile.color,
+                                 (tile.x_coordinate, tile.y_coordinate,
+                                  self.tile_size, self.tile_size))
 
     def reset_hover_tiles(self):
-        """Reset all 'mouse_hover' tiles to 'empty'."""
-        for tile in self.tiles:
+        for tile in flatten_list(self.tiles, []):
             if tile.status == "mouse_hover":
                 tile.update_status("empty")
 
     def update_hover(self, active_tile):
-        """Set active tile to 'mouse_hover' if empty."""
         self.reset_hover_tiles()
         if active_tile and active_tile.status == "empty":
             active_tile.update_status("mouse_hover")
+
+    def find_tile(self, x, y):
+        for row in range(len(self.tiles)):
+            for col in range(len(self.tiles[row])):
+                tile = self.tiles[row][col]
+                if mouse_collision([x, y],
+                                     [tile.x_coordinate, tile.y_coordinate,
+                                      self.tile_size, self.tile_size]):
+                    return tile
+        return None
+
+#TODO Optimize Flood Fill Check function (no brute force)
+# Brute-Force Flood Fill Check for Any Closed Rectangle
+    def flood_fill_player(self, player):
+        """
+        Iterates over every possible rectangle on the grid. If a rectangle's boundary
+        (its top, bottom, left, and right edges) is completely filled with the player's tile,
+        then the entire interior of that rectangle is updated to that player's tile.
+        """
+        for x1 in range(self.grid_size):
+            for y1 in range(self.grid_size):
+                for x2 in range(x1 + 1, self.grid_size):
+                    for y2 in range(y1 + 1, self.grid_size):
+                        complete = True
+                        # Check top edge
+                        for x in range(x1, x2 + 1):
+                            if self.tiles[x][y1].status != player:
+                                complete = False
+                                break
+                        if not complete:
+                            continue
+                        # Check bottom edge
+                        for x in range(x1, x2 + 1):
+                            if self.tiles[x][y2].status != player:
+                                complete = False
+                                break
+                        if not complete:
+                            continue
+                        # Check left edge
+                        for y in range(y1, y2 + 1):
+                            if self.tiles[x1][y].status != player:
+                                complete = False
+                                break
+                        if not complete:
+                            continue
+                        # Check right edge
+                        for y in range(y1, y2 + 1):
+                            if self.tiles[x2][y].status != player:
+                                complete = False
+                                break
+                        if not complete:
+                            continue
+                        # If we get here, the boundary is complete.
+                        for x in range(x1 + 1, x2):
+                            for y in range(y1 + 1, y2):
+                                self.tiles[x][y].update_status(player)
 
 # Main Game Loop
 def main():
